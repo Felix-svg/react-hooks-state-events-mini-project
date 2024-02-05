@@ -1,19 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import CategoryFilter from "./CategoryFilter";
-import NewTaskForm from "./NewTaskForm";
 import TaskList from "./TaskList";
-
+import NewTaskForm from "./NewTaskForm";
 import { CATEGORIES, TASKS } from "../data";
-console.log("Here's the data you're working with");
-console.log({ CATEGORIES, TASKS });
 
 function App() {
+  const [tasks, setTasks] = useState(TASKS);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const onSelectCategory = (category) => {
+    setSelectedCategory(category);
+    const filteredTasks = category ? TASKS.filter(task => task.category === category) : TASKS;
+    setTasks(filteredTasks);
+  };
+
+const onDeleteTask = (taskInput) => {
+  setTasks((prevTasks) => prevTasks.filter((task) => task !== taskInput));
+  };
+
+
   return (
     <div className="App">
       <h2>My tasks</h2>
-      <CategoryFilter />
+      <CategoryFilter categories={CATEGORIES} onSelectCategory={onSelectCategory} />
       <NewTaskForm />
-      <TaskList />
+      <TaskList tasks={tasks} onDeleteTask={onDeleteTask} />
     </div>
   );
 }
